@@ -8,7 +8,7 @@ from fuzzywuzzy import fuzz
 import calendar
 from datetime import timedelta
 
-class Conversation:        
+class Conversation:
     def __init__(self, messages=None, verbose=False, neutral=False):
         if messages is None: # changed
             messages = []
@@ -25,18 +25,18 @@ class Conversation:
             if 'sender_name' in message:
                 names.append(message['sender_name'])
         return set(names)
-    
+
     def get_tags(self):
         tags = []
         for message in self.messages:
             if 'tag' in message:
                 tags.append(message['tag'])
         return set(tags)
-            
+
     def load(self, filename, tag=None, participants=None):
         with open(filename) as file:
             self.content = json.load(file)
-            
+
             try:
                 if tag==None:
                     tag = self.content['title']
@@ -45,12 +45,14 @@ class Conversation:
             except KeyError, e:
                 if self.verbose:
                     print "Error loading title and participants in %s" % filename
-            
+
             self.content = self.content['messages']
-    
+
             for i in tqdm(range(0,len(self.content)), leave=False):
                 try:
                     senti_subjecti = self.get_sentiment(self.content[i]['content'])
+                    if 'timestamp' not in self.content[i] and 'timestamp_ms' in self.content[i]:
+                        self.content[i]['timestamp'] = self.content[i]['timestamp_ms']/1000.0
                     self.content[i]['tag'] = tag
                     self.content[i]['participants'] = participants
                     self.content[i]['sentiment'] = senti_subjecti.polarity
@@ -60,33 +62,36 @@ class Conversation:
                 except KeyError, e:
                     if self.verbose:
                         print "KeyError in file %s" % (filename)
-                
+
     def get_df(self):
         df = pd.DataFrame(self.messages)
-        df['Date_Time'] = pd.to_datetime(df['timestamp'],unit='s')
+        if 'timestamp_ms' in df and 'timestamp' not in df: ## Last minute fix because facebook changed formats on us
+            df['timestamp'] = [val/1000.0 for val in df['timestamp_ms']]
+        if 'timestamp' in df:
+            df['Date_Time'] = pd.to_datetime(df['timestamp'],unit='s')
         return df.set_index("Date_Time")
-    
+
     def get_stats(self, extended=False):
         stats = dict()
         stats['names'] = self.get_names()
         stats['tags'] = self.get_tags()
         stats['length'] = len(self.messages)
         stats['neutral'] = self.neutral
-        
+
         if extended:
             participants = []
             for message in self.messages:
                 if 'participants' in message:
                     participants.append(message['participants'])
             stats['participants'] = set(participants)
-        
+
         return stats
-        
+
     def search_names(self, name):
-        return sorted(self.get_names(), 
-                      key=lambda cur_name: fuzz.token_sort_ratio(cur_name, name), 
+        return sorted(self.get_names(),
+                      key=lambda cur_name: fuzz.token_sort_ratio(cur_name, name),
                       reverse=True)
-    
+
     def filter_by_name(self, names, including=True):
         filtered = []
         for message in self.messages:
@@ -95,7 +100,7 @@ class Conversation:
                 if (including and included) or (not including and not included):
                     filtered.append(message)
         return Conversation(filtered, self.verbose, self.neutral)
-    
+
     def filter_by_tag(self, tags, including=True):
         filtered = []
         for message in self.messages:
@@ -104,12 +109,12 @@ class Conversation:
                 if (including and included) or (not including and not included):
                     filtered.append(message)
         return Conversation(filtered, self.verbose, self.neutral)
-    
+
     def filter_by_datetime(self, start, end=None):
         start_timestamp = calendar.timegm(start.timetuple())
         end_timestamp = calendar.timegm(end.timetuple()) if end != None else None
-        return self.filter_by_timestamp(start_timestamp, end_timestamp)  
-    
+        return self.filter_by_timestamp(start_timestamp, end_timestamp)
+
     def filter_by_sentiment(self, begin=-1.0, end=1.0, including=True):
         filtered = []
         for message in self.messages:
@@ -117,7 +122,7 @@ class Conversation:
             if (including and included) or (not including and not included):
                 filtered.append(message)
         return Conversation(filtered, self.verbose, self.neutral)
-            
+
     def filter_by_timestamp(self, start, end=None):
         if end != None and start > end:
             tmp = start
@@ -130,10 +135,10 @@ class Conversation:
                     if end is None or message['timestamp'] <= end:
                         filtered.append(message)
         return Conversation(filtered, self.verbose, self.neutral)
-    
+
     def save_csv_utf8(self, filename):
         self.get_df().to_csv(filename, encoding='utf-8')
-        
+
     def annot_highlow(self, smadf, rangedf, selected_row):
         highrow = rangedf.loc[rangedf['sentiment'].idxmax()]
         lowrow  = rangedf.loc[rangedf['sentiment'].idxmin()]
@@ -141,10 +146,10 @@ class Conversation:
         annot = "High: %s - %s<br>Cur: %s - %s<br>Low: %s - %s" % (
             highrow['sender_name'], highrow['content'],
             currow['sender_name'][0],  currow['content'][0],
-            lowrow['sender_name'],  lowrow['content'] 
+            lowrow['sender_name'],  lowrow['content']
         )
         return annot
-    
+
     def annot_current_with_subjectivity(self, smadf, rangedf, selected_row):
         currow  = smadf.iloc[[selected_row]]
         annot = "From:%s<br>Sentiment:%s<br>Subjectivity:%s<br>Content:%s" % (
@@ -170,9 +175,11 @@ class Conversation:
         smadf['density'] = density
         if annotation!=None:
             smadf['annotation'] = annot
-    
-    def plot(self, timeframe = 'D', ohlc = False, smas = [10, 50], ohlc_colors = ['#17BECF', '#7F7F7F'], 
-             density=False, annotation=None):
+
+    def plot(self, timeframe = 'D', ohlc = False, smas = [1], ohlc_colors = ['#17BECF', '#7F7F7F'],
+             density=False, annotation=None, label=""):
+        if label!="":
+            label += " - "
         if timeframe == 'W':
             timeframe = 'D'
             smas = [j*7 for j in smas]
@@ -193,14 +200,16 @@ class Conversation:
                     name="OHLC",
                     yaxis='y2'))
         for sma in smas:
-            smadf = messagedf.rolling(str(sma)+timeframe).mean()
+            smadf = messagedf[['sentiment']].rolling(str(sma)+timeframe).mean()
+            smaremoved = messagedf[messagedf.columns.difference(['sentiment'])]
+            smadf = pd.concat([smadf, smaremoved], axis=1)
             if density or annotation:
                 self.add_density_cloud(messagedf, smadf, sma, timeframe, annotation)
             if annotation != None:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="SMA%d"%sma, text=smadf['annotation']))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,sma), text=smadf['annotation']))
             else:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="SMA%d"%sma))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,sma)))
             if density:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['density'], name="Density-SMA%d"%sma))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['density'], name="%sDensity-SMA%d"%(label,sma)))
 
         return plots
