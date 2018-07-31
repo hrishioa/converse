@@ -22,11 +22,11 @@ docker pull hrishioa/converse
 
 ## Quickstart
 
-Converse currently supports only facebook messenger (Whatsapp dump support is planned). 
+Converse currently supports only facebook messenger (Whatsapp dump support is planned).
 
 1. The first step is to download your chat data (use [one](https://www.imore.com/how-download-copy-your-facebook-data) [of](https://sea.pcmag.com/software/20441/feature/how-to-download-your-facebook-data-and-6-surprising-things-i) these guides to do so - make sure to pick JSON over HTML as the format), and unzip the archive. Converse is completely offline (even for plotting), and all your information is local.
 
-2. Create new jupyter notebook (ideally in the messages directory) with 
+2. Create new jupyter notebook (ideally in the messages directory) with
 
    ```sh
    jupyter notebook
@@ -38,7 +38,7 @@ Converse currently supports only facebook messenger (Whatsapp dump support is pl
    from converse import Conversation
    from tqdm import tqdm_notebook as tqdm
    from plotly.offline import init_notebook_mode, iplot
-   
+
    init_notebook_mode(connected=True)
    convo = Conversation()
    convo.load("path-to-message.json") # structure is usually archive-root/convo-name/message.json
@@ -67,4 +67,3 @@ This project is licensed under GPLv3.
 
 
 This project was cobbled together from tools built by the author in a weekend to do some standard sentiment analysis. Still very much in alpha, maybe even pre-alpha. Do submit any issues or problems, I'll do my best to patch!
-

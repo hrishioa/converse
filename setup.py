@@ -1,15 +1,16 @@
 import setuptools
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="converse",
-    version="0.1a3",
+    version="0.1a4",
     author="Hrishi Olickel",
     author_email="hrishioa@gmail.com",
     description="Conversational Analytics and Plotting Library",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://github.com/hrishioa/converse",
     packages=setuptools.find_packages(),
     install_requires=[
