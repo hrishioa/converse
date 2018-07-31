@@ -12,7 +12,7 @@ Converse is a flexible charting library in python that makes sentiment analysis 
 pip install converse
 ```
 
-That's all, really. For a walkthrough of the basic features, look here or in Demo.ipynb. For a ready-to-go installation with a (really small, faked) conversation, run:
+That's all, really. For a walkthrough of the basic features, look here or in `docker/messages/Demo.ipynb`. For a ready-to-go installation with a (really small, faked) conversation, run:
 
 ```sh
 docker pull hrishioa/converse
