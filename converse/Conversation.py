@@ -178,6 +178,7 @@ class Conversation:
 
     def plot(self, timeframe = 'D', ohlc = False, smas = [1], ohlc_colors = ['#17BECF', '#7F7F7F'],
              density=False, annotation=None, label=""):
+         oldsmas = smas
         if label!="":
             label += " - "
         if timeframe == 'W':
@@ -206,10 +207,10 @@ class Conversation:
             if density or annotation:
                 self.add_density_cloud(messagedf, smadf, sma, timeframe, annotation)
             if annotation != None:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,sma), text=smadf['annotation']))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,oldsmas[smas.index(sma)]), text=smadf['annotation']))
             else:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,sma)))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['sentiment'], name="%sSMA%d"%(label,oldsmas[smas.index(sma)])))
             if density:
-                plots.append(go.Scatter(x=smadf.index, y=smadf['density'], name="%sDensity-SMA%d"%(label,sma)))
+                plots.append(go.Scatter(x=smadf.index, y=smadf['density'], name="%sDensity-SMA%d"%(label,oldsmas[smas.index(sma)])))
 
         return plots

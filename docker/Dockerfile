@@ -39,12 +39,11 @@ RUN apt-get update && apt-get upgrade \
 RUN pip install --upgrade pip
 RUN pip install jupyter
 RUN pip install converse
+RUN python -m textblob.download_corpora lite
 
 RUN mkdir /converse_playground
 WORKDIR /converse_playground/
 COPY messages/ /converse_playground
-
-# jupyter config stuff
 
 EXPOSE 9999
 CMD ["jupyter", "notebook", "--allow-root", "--ip", "0.0.0.0", \

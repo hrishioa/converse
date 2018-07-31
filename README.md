@@ -4,21 +4,17 @@
 
 Converse is a flexible charting library in python that makes sentiment analysis and charting easier. The aim is to provide strong functionality out of the box with minimal code while being configurable enough to support larger projects.
 
-
-
 ## Getting Started
 
 ```sh
 pip install converse
 ```
 
-That's all, really. For a walkthrough of the basic features, look here or in `docker/messages/Demo.ipynb`. For a ready-to-go installation with a (really small, faked) conversation, run:
+That's all, really. For a full walkthrough of the basic features, look here - [Converse: An easy sentiment analysis library for Messenger](http://hrishioa.github.io/converse-an-easy-sentiment-analysis-library-for-messenger/) - or in `docker/messages/Demo.ipynb`. For a ready-to-go installation with a (really small, faked) conversation, run:
 
 ```sh
 docker pull hrishioa/converse
 ```
-
-
 
 ## Quickstart
 
@@ -45,8 +41,6 @@ Converse currently supports only facebook messenger (Whatsapp dump support is pl
    iplot(convo.plot())
    ```
 
-
-
 ### Built With
 
 ----
@@ -55,7 +49,6 @@ Converse currently supports only facebook messenger (Whatsapp dump support is pl
 * [Pandas](https://pandas.pydata.org/) - data management
 * [Plotly](https://plot.ly/python/) - graphing
 * [FuzzyWuzzy](https://github.com/seatgeek/fuzzywuzzy) - string searching
-
 
 
 ### License

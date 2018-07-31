@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="converse",
-    version="0.1a4",
+    version="0.1a5",
     author="Hrishi Olickel",
     author_email="hrishioa@gmail.com",
     description="Conversational Analytics and Plotting Library",
