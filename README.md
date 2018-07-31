@@ -6,9 +6,7 @@ Converse is a flexible charting library in python that makes sentiment analysis 
 
 
 
-### Getting started
-
------
+## Getting Started
 
 ```sh
 pip install converse
@@ -46,6 +44,8 @@ Converse currently supports only facebook messenger (Whatsapp dump support is pl
    convo.load("path-to-message.json") # structure is usually archive-root/convo-name/message.json
    iplot(convo.plot())
    ```
+
+
 
 ### Built With
 
