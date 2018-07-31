@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "sender_name": "Hrishi Olickel",
+      "timestamp_ms": 1532426594594,
+      "content": "hello world",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Hrishi Olickel",
+      "timestamp_ms": 1532426577103,
+      "content": "this is awesome",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Jane Doe",
+      "timestamp_ms": 1532426337393,
+      "content": "but what can we really do with sentiment analytics",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Jane Doe",
+      "timestamp_ms": 1532424952349,
+      "content": "Right",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Jane Doe",
+      "timestamp_ms": 1532424864920,
+      "content": "Not sure",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Jane Doe",
+      "timestamp_ms": 1532424807067,
+      "content": "But it's not a given that I'll get it",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Jane Doe",
+      "timestamp_ms": 1532424793350,
+      "content": "Ah that sucks",
+      "type": "Generic"
+    },
+    {
+      "sender_name": "Hrishi Olickel",
+      "timestamp_ms": 1532423736370,
+      "content": "but that is awesome",
+      "type": "Generic"
+    }
+  ],
+  "title": "Jane Doe",
+  "is_still_participant": true,
+  "thread_type": "Regular",
+  "participants": [
+    "Jane Doe"
+  ],
+  "thread_path": "Sample_Convo"
+}
